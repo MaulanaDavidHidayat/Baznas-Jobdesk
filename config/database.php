@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-$host = 'localhost';
-$dbname = 'db_baznas';
-$dbuser = 'root';
+$host = '-';
+$dbname = '-';
+$dbuser = '-';
 $dbpass = '';
 
 try {
