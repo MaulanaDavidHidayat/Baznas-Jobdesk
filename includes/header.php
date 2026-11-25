@@ -26,11 +26,11 @@ $flashMessage = get_flash();
 
     <link
         rel="stylesheet"
-        href="<?= $basePath ?>assets/css/style.css"
+        href="<?= $basePath ?>assets/css/style.css?v=<?= (int) filemtime(__DIR__ . '/../assets/css/style.css') ?>"
     >
 
     <script
-        src="<?= $basePath ?>assets/js/app.js"
+        src="<?= $basePath ?>assets/js/app.js?v=<?= (int) filemtime(__DIR__ . '/../assets/js/app.js') ?>"
         defer
     ></script>
 </head>

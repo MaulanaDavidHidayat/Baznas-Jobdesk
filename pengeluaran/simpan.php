@@ -28,9 +28,6 @@ if (
     $tanggalObj->format('Y-m-d') !== $tanggal
 ) {
     $errors[] = 'Tanggal tidak valid.';
-} elseif (!tanggal_di_bulan_ini($tanggal)) {
-    $errors[] = 'Tanggal hanya boleh pada bulan ini ('
-        . label_periode_bulan((string) date('n')) . ').';
 }
 
 if ($keterangan === '') {

@@ -105,6 +105,55 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
+  // Tandai guru yang sudah infaq sesuai bulan pada kolom tanggal.
+  document.querySelectorAll("[data-infaq-bulan]").forEach(function (select) {
+    const petaInfaq = JSON.parse(select.dataset.infaqBulan || "{}");
+    const form = select.form;
+    const tanggal = form ? form.querySelector('input[name="tanggal"]') : null;
+    const status = select.parentElement.querySelector("[data-infaq-status]");
+    const daftarOpsi = Array.from(select.options).filter(function (option) {
+      return option.value !== "";
+    });
+
+    const perbaruiStatus = function () {
+      const periode = tanggal && tanggal.value.length >= 7
+        ? tanggal.value.slice(0, 7)
+        : "";
+      const idSudah = petaInfaq[periode] || [];
+      let sudah = 0;
+
+      daftarOpsi.forEach(function (option) {
+        const aktif = idSudah.includes(Number(option.value));
+        const nama = option.dataset.namaGuru || option.textContent;
+
+        option.textContent = nama + (aktif ? " · Sudah infaq" : "");
+        option.classList.toggle("sudah-infaq", aktif);
+
+        if (aktif) {
+          sudah += 1;
+        }
+      });
+
+      select.classList.toggle(
+        "pilihan-sudah-infaq",
+        idSudah.includes(Number(select.value))
+      );
+
+      if (status) {
+        status.textContent =
+          sudah + " guru sudah infaq, " + (daftarOpsi.length - sudah) +
+          " belum pada bulan ini.";
+      }
+    };
+
+    if (tanggal) {
+      tanggal.addEventListener("change", perbaruiStatus);
+    }
+
+    select.addEventListener("change", perbaruiStatus);
+    perbaruiStatus();
+  });
+
   // Tombol cetak laporan.
   document.querySelectorAll("[data-print]").forEach(function (button) {
     button.addEventListener("click", function () {

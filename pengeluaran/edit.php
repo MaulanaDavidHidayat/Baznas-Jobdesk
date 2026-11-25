@@ -70,6 +70,9 @@ require_once __DIR__ . '/../includes/header.php';
                         required
                         autofocus
                     >
+                    <small class="form-hint">
+                        Pilih tanggal sesuai transaksi.
+                    </small>
                 </div>
 
                 <div class="form-group">

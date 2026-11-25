@@ -50,7 +50,29 @@ $summary = $summaryStmt->fetch() ?: [];
 
 $total = (int) ($summary['jumlah_data'] ?? 0);
 $totalNilai = (float) ($summary['total_nilai'] ?? 0);
-$totalGuru = (int) ($summary['jumlah_guru'] ?? 0);
+
+$paramsGuru = [];
+$bulanGuruSql = where_bulan(
+    $bulan,
+    'i.tanggal',
+    $paramsGuru,
+    'guru_bulan'
+);
+
+$guruStmt = $pdo->prepare(
+    'SELECT
+        COUNT(DISTINCT g.id_guru) AS total_guru,
+        COUNT(DISTINCT i.id_guru) AS sudah_infaq
+     FROM guru g
+     LEFT JOIN infaq i ON i.id_guru = g.id_guru'
+    . ($bulanGuruSql !== null ? ' AND ' . $bulanGuruSql : '')
+);
+$guruStmt->execute($paramsGuru);
+$dataGuru = $guruStmt->fetch() ?: [];
+
+$totalGuru = (int) ($dataGuru['total_guru'] ?? 0);
+$sudahInfaq = (int) ($dataGuru['sudah_infaq'] ?? 0);
+$belumInfaq = max(0, $totalGuru - $sudahInfaq);
 
 $totalPages = max(1, (int) ceil($total / $perPage));
 $page = min($page, $totalPages);
@@ -119,11 +141,26 @@ require_once __DIR__ . '/../includes/header.php';
         </div>
 
         <strong class="stat-value">
-            <?= number_format($totalGuru, 0, ',', '.') ?>
+            <?= number_format($sudahInfaq, 0, ',', '.') ?>
         </strong>
 
         <span class="stat-description">
-            Guru yang mencatat Infaq pada periode ini
+            Dari <?= number_format($totalGuru, 0, ',', '.') ?> guru pada periode ini
+        </span>
+    </div>
+
+    <div class="stat-card red">
+        <div class="stat-top">
+            <span class="stat-label">Guru Belum Infaq</span>
+            <span class="stat-icon">♙</span>
+        </div>
+
+        <strong class="stat-value">
+            <?= number_format($belumInfaq, 0, ',', '.') ?>
+        </strong>
+
+        <span class="stat-description">
+            Guru yang belum mencatat Infaq pada periode ini
         </span>
     </div>
 

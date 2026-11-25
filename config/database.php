@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-$host = '-';
-$dbname = '-';
-$dbuser = '-';
-$dbpass = '';
+$host = 'sql307.infinityfree.com';
+$dbname = 'if0_43305523_db_baznas';
+$dbuser = 'if0_43305523';
+$dbpass = 'Baznas12345';
 
 try {
     $pdo = new PDO(

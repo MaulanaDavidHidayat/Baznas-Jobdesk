@@ -2310,3 +2310,16 @@ body {
   font-weight: 700;
   line-height: 1.4;
 }
+
+option.sudah-infaq {
+  background-color: #a5dbb9;
+  color: #00452a;
+  font-weight: 700;
+}
+
+select.form-control.pilihan-sudah-infaq {
+  background-color: #a5dbb9;
+  border-color: #2f9b62;
+  color: #00452a;
+  font-weight: 700;
+}

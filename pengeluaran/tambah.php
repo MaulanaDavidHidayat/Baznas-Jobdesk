@@ -6,9 +6,6 @@ require_once __DIR__ . '/../includes/functions.php';
 
 require_login();
 
-[$awalBulan, $akhirBulan] = batas_bulan_ini();
-$periodeBulan = label_periode_bulan((string) date('n'));
-
 $pageTitle = 'Tambah Pengeluaran';
 $activePage = 'pengeluaran';
 $basePath = '../';
@@ -48,14 +45,11 @@ require_once __DIR__ . '/../includes/header.php';
                         id="tanggal"
                         name="tanggal"
                         value="<?= e(date('Y-m-d')) ?>"
-                        min="<?= e($awalBulan) ?>"
-                        max="<?= e($akhirBulan) ?>"
                         required
                         autofocus
                     >
                     <small class="form-hint">
-                        Tanggal hanya bisa diisi pada bulan ini
-                        (<?= e($periodeBulan) ?>).
+                        Pilih tanggal sesuai transaksi.
                     </small>
                 </div>
 

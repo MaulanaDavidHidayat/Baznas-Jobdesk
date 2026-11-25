@@ -31,6 +31,24 @@ $daftarGuru = $pdo
     )
     ->fetchAll();
 
+$sudahInfaq = [];
+$stmtInfaq = $pdo->query(
+    'SELECT id_guru, SUBSTRING(tanggal, 1, 7) AS periode
+     FROM infaq
+     GROUP BY id_guru, SUBSTRING(tanggal, 1, 7)'
+);
+
+foreach ($stmtInfaq->fetchAll() as $row) {
+    $sudahInfaq[$row['periode']][] = (int) $row['id_guru'];
+}
+
+$periodeAwal = substr($infaq['tanggal'], 0, 7);
+$sudahPilih = in_array(
+    (int) $infaq['id_guru'],
+    $sudahInfaq[$periodeAwal] ?? [],
+    true
+);
+
 $pageTitle = 'Edit infaq';
 $activePage = 'infaq';
 $basePath = '../';
@@ -70,21 +88,34 @@ require_once __DIR__ . '/../includes/header.php';
                         Nama Guru <span class="required">*</span>
                     </label>
                     <select
-                        class="form-control"
+                        class="form-control<?= $sudahPilih ? ' pilihan-sudah-infaq' : '' ?>"
                         id="id_guru"
                         name="id_guru"
+                        data-infaq-bulan="<?= e(json_encode($sudahInfaq, JSON_THROW_ON_ERROR)) ?>"
                         required
                     >
                         <option value="">Pilih guru</option>
                         <?php foreach ($daftarGuru as $guru): ?>
+                            <?php $sudah = in_array(
+                                (int) $guru['id_guru'],
+                                $sudahInfaq[$periodeAwal] ?? [],
+                                true
+                            ); ?>
                             <option
                                 value="<?= (int) $guru['id_guru'] ?>"
+                                data-nama-guru="<?= e($guru['nama_guru']) ?>"
+                                class="<?= $sudah ? 'sudah-infaq' : '' ?>"
                                 <?= (int) $guru['id_guru'] === (int) $infaq['id_guru'] ? 'selected' : '' ?>
                             >
-                                <?= e($guru['nama_guru']) ?>
+                                <?= e($guru['nama_guru']) ?><?= $sudah ? ' · Sudah infaq' : '' ?>
                             </option>
                         <?php endforeach; ?>
                     </select>
+                    <small class="form-hint" data-infaq-status></small>
+                    <small class="form-hint">
+                        Latar hijau dan tanda "Sudah infaq" menandakan guru
+                        sudah infaq pada bulan yang dipilih di kolom tanggal.
+                    </small>
                 </div>
 
                 <div class="form-group">
@@ -99,6 +130,9 @@ require_once __DIR__ . '/../includes/header.php';
                         value="<?= e($infaq['tanggal']) ?>"
                         required
                     >
+                    <small class="form-hint">
+                        Pilih tanggal sesuai transaksi.
+                    </small>
                 </div>
 
                 <div class="form-group">
